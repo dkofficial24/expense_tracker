@@ -6,7 +6,9 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+//https://github.com/dkofficial24/expense_tracker
 
+  //git remote add upstream https://github.com/dkofficial24/expense_tracker.git
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
