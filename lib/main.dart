@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  DI.init();
   await Firebase.initializeApp();
+  DI.init();
   runApp(const MyApp());
 }
 
