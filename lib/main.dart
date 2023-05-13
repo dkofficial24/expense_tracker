@@ -1,10 +1,12 @@
 import 'package:expense_tracker/core/models/dependency_injector.dart';
 import 'package:expense_tracker/dashboard/ui/screen/dashboard_screen.dart';
 import 'package:expense_tracker/expense_tracker/provider/expense_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  await Firebase.initializeApp();
   DI.init();
   runApp(const MyApp());
 }
