@@ -6,8 +6,8 @@ class ExpenseRepository {
 
   FirebaseService firebaseService;
 
-  void addExpense(ExpenseInfo expenseInfo) async {
-    firebaseService.addExpense(expenseInfo);
+  Future addExpense(ExpenseInfo expenseInfo) async {
+    await firebaseService.addExpense(expenseInfo);
   }
 
   Future<List<ExpenseInfo>> getAllExpense() async {
