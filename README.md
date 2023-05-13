@@ -4,14 +4,14 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+- Core is a common/shared folder 
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-testing from yogii
+# Project Directory Structure
+  - UI -> Provider -> Repository -> Service
+  
+# Standard to be follow:
+ - Don't create any service or repository in any class instead pass the instance through constructor.
+ - Don't create long build method. Create smaller widget functions or separated stateless widget
+ - Don't write big functions. Instead create small/modular testable functions.
+ - Create readable and meaningful file, class, function and variable names.
+ - Remember your dart file should not have any warning in it.
