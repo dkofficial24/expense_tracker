@@ -37,7 +37,7 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -49,16 +49,18 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
               const SizedBox(
                 height: 16,
               ),
-              Wrap(
-                children: itemMap.keys.map((e) {
-                  itemMap[e]?.name = e;
-                  return CategoryChipWidget(
-                    categoryItem: itemMap[e]!,
-                    categoryTapCallback: (CategoryItem item) {
-                      onCategoryTap(item);
-                    },
-                  );
-                }).toList(),
+              Flexible(
+                child: Wrap(
+                  children: itemMap.keys.map((e) {
+                    itemMap[e]?.name = e;
+                    return CategoryChipWidget(
+                      categoryItem: itemMap[e]!,
+                      categoryTapCallback: (CategoryItem item) {
+                        onCategoryTap(item);
+                      },
+                    );
+                  }).toList(),
+                ),
               ),
               const SizedBox(
                 height: 16,
@@ -78,26 +80,34 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
               const SizedBox(
                 height: 16,
               ),
-              Flexible(
-                child: GridView.count(
-                  crossAxisCount: 3,
-                  shrinkWrap: true,
-                  childAspectRatio: 2,
-                  children: List.generate(10, (index) {
+              GridView.count(
+                crossAxisCount: 3,
+                shrinkWrap: true,
+                childAspectRatio: 2,
+                children: List.generate(
+                  11,
+                  (index) {
+                    index = index + 1;
+
+                    ///Info: To place the last item in the center
+                    if (index == 10) {
+                      return const SizedBox();
+                    }
+                    ///Info: To Place the zero at the last
+                    if (index == 11) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: numberButtonWidget(0),
+                      );
+                    }
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                          onPressed: currentCategoryItem != null
-                              ? () {
-                                  onNumberTap(index);
-                                }
-                              : null,
-                          child: Text(index.toString())),
+                      child: numberButtonWidget(index),
                     );
-                  }),
+                  },
                 ),
               ),
-              const Spacer(),
+          const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Row(
@@ -117,6 +127,16 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
         ),
       ),
     );
+  }
+
+  ElevatedButton numberButtonWidget(int index) {
+    return ElevatedButton(
+        onPressed: currentCategoryItem != null
+            ? () {
+                onNumberTap(index);
+              }
+            : null,
+        child: Text(index.toString()));
   }
 
   ///-------------------Functionalities Methods---------------------------------
