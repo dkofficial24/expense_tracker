@@ -40,7 +40,7 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '${StringConstant.party} - $totalAmount',
+                '${StringConstant.total} - $totalAmount',
                 textAlign: TextAlign.start,
                 style:
                     const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
