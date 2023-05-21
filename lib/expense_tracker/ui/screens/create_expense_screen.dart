@@ -178,6 +178,7 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
     setState(() {
       _amountEditingController.clear();
       totalAmount = 0;
+      currentCategoryItem = null;
       itemMap.forEach((key, value) {
         value.amount = 0;
         value.isSelected = false;
