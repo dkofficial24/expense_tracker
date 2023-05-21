@@ -37,7 +37,6 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -93,6 +92,7 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
                     if (index == 10) {
                       return const SizedBox();
                     }
+
                     ///Info: To Place the zero at the last
                     if (index == 11) {
                       return Padding(
@@ -107,7 +107,7 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
                   },
                 ),
               ),
-          const Spacer(),
+              const Spacer(),
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Row(
@@ -117,7 +117,7 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
                         onPressed: resetData,
                         child: const Text(StringConstant.reset)),
                     ElevatedButton(
-                        onPressed: () {},
+                        onPressed: onSaveExpenses,
                         child: const Text(StringConstant.save)),
                   ],
                 ),
@@ -176,6 +176,10 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
       totalAmount = 0;
       totalAmount = CreateExpenseUtil.calculateTotalAmount(itemMap);
     });
+  }
+
+  void onSaveExpenses() {
+    AppUtils.showToast(msg: "Not implemented yet");
   }
 
   void resetData() {
