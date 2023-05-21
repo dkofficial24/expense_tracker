@@ -1,5 +1,7 @@
+import 'package:expense_tracker/core/core.dart';
 import 'package:expense_tracker/expense_tracker/models/category_item.dart';
-import 'package:expense_tracker/expense_tracker/ui/widgets/custom_text_field.dart';
+import 'package:expense_tracker/expense_tracker/ui/create_expense.util.dart';
+import 'package:expense_tracker/expense_tracker/ui/ui.dart';
 import 'package:flutter/material.dart';
 
 class CreateExpenseScreen extends StatefulWidget {
@@ -17,11 +19,11 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
   bool isCategorySelected = false;
 
   Map<String, CategoryItem> itemMap = {
-    "Party": CategoryItem(),
-    "Movie": CategoryItem(),
-    "Trip": CategoryItem(),
-    "Club": CategoryItem(),
-    "Fruits": CategoryItem(),
+    StringConstant.party: CategoryItem(),
+    StringConstant.movie: CategoryItem(),
+    StringConstant.trip: CategoryItem(),
+    StringConstant.club: CategoryItem(),
+    StringConstant.fruits: CategoryItem(),
   };
 
   CategoryItem? currentCategoryItem;
@@ -35,11 +37,10 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                totalAmount.toString(),
+                '${StringConstant.total} - $totalAmount',
                 textAlign: TextAlign.start,
                 style:
                     const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -47,11 +48,18 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
               const SizedBox(
                 height: 16,
               ),
-              Wrap(
-                children: itemMap.keys.map((e) {
-                  itemMap[e]?.name = e;
-                  return _renderChip(itemMap[e]!);
-                }).toList(),
+              Flexible(
+                child: Wrap(
+                  children: itemMap.keys.map((e) {
+                    itemMap[e]?.name = e;
+                    return CategoryChipWidget(
+                      categoryItem: itemMap[e]!,
+                      categoryTapCallback: (CategoryItem item) {
+                        onCategoryTap(item);
+                      },
+                    );
+                  }).toList(),
+                ),
               ),
               const SizedBox(
                 height: 16,
@@ -61,6 +69,7 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
                   child: CustomTextFieldWidget(
                     controller: _amountEditingController,
                     isEnabled: currentCategoryItem != null,
+                    onBackspace: onBackButtonTap,
                     onChanged: (value) {
                       if (value.isEmpty) return;
                       currentCategoryItem?.amount = int.parse(value);
@@ -70,33 +79,47 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
               const SizedBox(
                 height: 16,
               ),
-              Flexible(
-                child: GridView.count(
-                  crossAxisCount: 5,
-                  shrinkWrap: true,
-                  childAspectRatio: 1,
-                  children: List.generate(10, (index) {
+              GridView.count(
+                crossAxisCount: 3,
+                shrinkWrap: true,
+                childAspectRatio: 2,
+                children: List.generate(
+                  11,
+                  (index) {
+                    index = index + 1;
+
+                    ///Info: To place the last item in the center
+                    if (index == 10) {
+                      return const SizedBox();
+                    }
+
+                    ///Info: To Place the zero at the last
+                    if (index == 11) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: numberButtonWidget(0),
+                      );
+                    }
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                          onPressed: currentCategoryItem != null
-                              ? () {
-                                  if (_amountEditingController.text == '0') {
-                                    _amountEditingController.clear();
-                                  }
-                                  _amountEditingController.text +=
-                                      index.toString();
-                                  currentCategoryItem?.amount =
-                                      int.parse(_amountEditingController.text);
-                                  totalAmount +=
-                                      currentCategoryItem?.amount ?? 0;
-                                  setState(() {});
-                                  setCursorPosition();
-                                }
-                              : null,
-                          child: Text(index.toString())),
+                      child: numberButtonWidget(index),
                     );
-                  }),
+                  },
+                ),
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                        onPressed: resetData,
+                        child: const Text(StringConstant.reset)),
+                    ElevatedButton(
+                        onPressed: onSaveExpenses,
+                        child: const Text(StringConstant.save)),
+                  ],
                 ),
               )
             ],
@@ -106,37 +129,75 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
     );
   }
 
+  ElevatedButton numberButtonWidget(int index) {
+    return ElevatedButton(
+        onPressed: currentCategoryItem != null
+            ? () {
+                onNumberTap(index);
+              }
+            : null,
+        child: Text(index.toString()));
+  }
+
+  ///-------------------Functionalities Methods---------------------------------
+
+  void onCategoryTap(CategoryItem item) {
+    _amountEditingController.clear();
+    currentCategoryItem = item;
+    itemMap.forEach((key, value) {
+      if (key != currentCategoryItem?.name) {
+        value.isSelected = false;
+      } else {
+        value.isSelected = true;
+      }
+    });
+    _amountEditingController.text = item.amount.toString();
+    setState(() {});
+  }
+
+  void onNumberTap(int index) {
+    if (_amountEditingController.text == '0') {
+      _amountEditingController.clear();
+    }
+    _amountEditingController.text += index.toString();
+    currentCategoryItem?.amount = int.parse(_amountEditingController.text);
+
+    totalAmount = 0;
+    totalAmount = CreateExpenseUtil.calculateTotalAmount(itemMap);
+    setState(() {});
+    setCursorPosition();
+  }
+
+  onBackButtonTap() {
+    setState(() {
+      currentCategoryItem?.amount = _amountEditingController.text.isNotEmpty
+          ? int.parse(_amountEditingController.text)
+          : 0;
+      totalAmount = 0;
+      totalAmount = CreateExpenseUtil.calculateTotalAmount(itemMap);
+    });
+  }
+
+  void onSaveExpenses() {
+    AppUtils.showToast(msg: "Not implemented yet");
+  }
+
+  void resetData() {
+    setState(() {
+      _amountEditingController.clear();
+      totalAmount = 0;
+      currentCategoryItem = null;
+      itemMap.forEach((key, value) {
+        value.amount = 0;
+        value.isSelected = false;
+      });
+    });
+  }
+
   void setCursorPosition() {
     _amountEditingController.selection =
         TextSelection.fromPosition(TextPosition(
       offset: _amountEditingController.text.length,
     ));
-  }
-
-  Widget _renderChip(CategoryItem item) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: ElevatedButton(
-        onPressed: () {
-          _amountEditingController.clear();
-          currentCategoryItem = item;
-          itemMap.forEach((key, value) {
-            if (key != currentCategoryItem?.name) {
-              value.isSelected = false;
-            } else {
-              value.isSelected = true;
-            }
-          });
-          _amountEditingController.text = item.amount.toString();
-          setState(() {});
-        },
-        child: Text(
-          item.name,
-          style: TextStyle(
-            color: item.isSelected ? Colors.red : Colors.white,
-          ),
-        ),
-      ),
-    );
   }
 }

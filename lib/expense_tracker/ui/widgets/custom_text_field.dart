@@ -4,11 +4,13 @@ class CustomTextFieldWidget extends StatefulWidget {
   final TextEditingController controller;
   final bool isEnabled;
   final ValueChanged<String>? onChanged;
+  final Function? onBackspace;
 
   const CustomTextFieldWidget({
     required this.controller,
     this.isEnabled = true,
     this.onChanged,
+    this.onBackspace,
     Key? key,
   }) : super(key: key);
 
@@ -36,6 +38,9 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
             },
             onTap: () {
               removeValueOneByOne();
+              if (widget.onBackspace != null) {
+                widget.onBackspace!();
+              }
               //_amountEditingController.clear();
             }),
       ),
