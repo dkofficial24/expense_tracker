@@ -170,6 +170,10 @@ class _CreateExpenseScreenState extends State<CreateExpenseScreen> {
 
   onBackButtonTap() {
     setState(() {
+      currentCategoryItem?.amount = _amountEditingController.text.isNotEmpty
+          ? int.parse(_amountEditingController.text)
+          : 0;
+      totalAmount = 0;
       totalAmount = CreateExpenseUtil.calculateTotalAmount(itemMap);
     });
   }

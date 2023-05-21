@@ -37,10 +37,10 @@ class _CustomTextFieldWidgetState extends State<CustomTextFieldWidget> {
               widget.controller.clear();
             },
             onTap: () {
+              removeValueOneByOne();
               if (widget.onBackspace != null) {
                 widget.onBackspace!();
               }
-              removeValueOneByOne();
               //_amountEditingController.clear();
             }),
       ),
